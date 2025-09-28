@@ -1,0 +1,191 @@
+@model WebMusic.Application.DTOs.SongDto
+@{
+    ViewData["Title"] = "Chi tiết bài hát";
+}
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        @if (!string.IsNullOrEmpty(Model.CoverImage))
+                        {
+                            <img src="@Model.CoverImage" class="img-fluid rounded" alt="@Model.Title" />
+                        }
+                        else
+                        {
+                            <div class="bg-secondary rounded d-flex align-items-center justify-content-center" style="height: 300px;">
+                                <i class="fas fa-music fa-5x text-white"></i>
+                            </div>
+                        }
+                    </div>
+                    <div class="col-md-8">
+                        <h2 class="mb-3">@Model.Title</h2>
+                        
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <strong><i class="fas fa-user me-2"></i>Người tải lên:</strong>
+                                <span class="text-muted">@(Model.UserName ?? "Unknown")</span>
+                            </div>
+                            <div class="col-sm-6">
+                                <strong><i class="fas fa-microphone me-2"></i>Nghệ sĩ:</strong>
+                                <span class="text-muted">@(Model.ArtistName ?? "Chưa xác định")</span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <strong><i class="fas fa-tag me-2"></i>Thể loại:</strong>
+                                <span class="text-muted">@(Model.GenreName ?? "Chưa phân loại")</span>
+                            </div>
+                            <div class="col-sm-6">
+                                <strong><i class="fas fa-compact-disc me-2"></i>Album:</strong>
+                                <span class="text-muted">@(Model.AlbumName ?? "Không có album")</span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <strong><i class="fas fa-clock me-2"></i>Thời lượng:</strong>
+                                <span class="text-muted">@TimeSpan.FromSeconds(Model.Duration).ToString(@"mm\:ss")</span>
+                            </div>
+                            <div class="col-sm-6">
+                                <strong><i class="fas fa-calendar me-2"></i>Ngày tải lên:</strong>
+                                <span class="text-muted">@Model.UploadedAt.ToString("dd/MM/yyyy HH:mm")</span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <strong><i class="fas fa-info-circle me-2"></i>Trạng thái:</strong>
+                            <span class="badge bg-@(Model.Status == "Approved" ? "success" : Model.Status == "Pending" ? "warning" : "danger") fs-6">
+                                @Model.Status
+                            </span>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <a href="@Model.FileUrl" target="_blank" class="btn btn-primary">
+                                <i class="fas fa-play me-1"></i>Nghe nhạc
+                            </a>
+                            <a asp-action="Edit" asp-route-id="@Model.SongId" class="btn btn-warning">
+                                <i class="fas fa-edit me-1"></i>Chỉnh sửa
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@Model.SongId" class="btn btn-danger">
+                                <i class="fas fa-trash me-1"></i>Xóa
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Card -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Thống kê</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-4">
+                        <div class="text-primary">
+                            <i class="fas fa-eye fa-3x mb-3"></i>
+                            <div class="fw-bold fs-2">@Model.ViewCount</div>
+                            <small class="text-muted">Lượt xem</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="text-danger">
+                            <i class="fas fa-heart fa-3x mb-3"></i>
+                            <div class="fw-bold fs-2">@Model.LikeCount</div>
+                            <small class="text-muted">Lượt thích</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="text-success">
+                            <i class="fas fa-comment fa-3x mb-3"></i>
+                            <div class="fw-bold fs-2">@Model.CommentCount</div>
+                            <small class="text-muted">Bình luận</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <!-- Quick Actions -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="fas fa-bolt me-2"></i>Thao tác nhanh</h6>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="@Model.FileUrl" target="_blank" class="btn btn-primary">
+                        <i class="fas fa-play me-1"></i>Nghe nhạc
+                    </a>
+                    <a asp-action="Edit" asp-route-id="@Model.SongId" class="btn btn-warning">
+                        <i class="fas fa-edit me-1"></i>Chỉnh sửa
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@Model.SongId" class="btn btn-danger">
+                        <i class="fas fa-trash me-1"></i>Xóa bài hát
+                    </a>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-list me-1"></i>Danh sách bài hát
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Song Information -->
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i>Thông tin chi tiết</h6>
+            </div>
+            <div class="card-body">
+                <table class="table table-sm">
+                    <tr>
+                        <td><strong>ID:</strong></td>
+                        <td>@Model.SongId</td>
+                    </tr>
+                    <tr>
+                        <td><strong>File URL:</strong></td>
+                        <td>
+                            <a href="@Model.FileUrl" target="_blank" class="text-decoration-none">
+                                <i class="fas fa-external-link-alt me-1"></i>Mở link
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ngày tạo:</strong></td>
+                        <td>@Model.UploadedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                    </tr>
+                    @if (Model.UpdatedAt.HasValue)
+                    {
+                        <tr>
+                            <td><strong>Ngày cập nhật:</strong></td>
+                            <td>@Model.UpdatedAt.Value.ToString("dd/MM/yyyy HH:mm")</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td><strong>Trạng thái:</strong></td>
+                        <td>
+                            <span class="badge bg-@(Model.Status == "Approved" ? "success" : Model.Status == "Pending" ? "warning" : "danger")">
+                                @Model.Status
+                            </span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Auto-refresh statistics every 30 seconds
+        setInterval(function() {
+            // TODO: Implement AJAX call to refresh statistics
+            console.log('Refreshing statistics...');
+        }, 30000);
+    </script>
+}

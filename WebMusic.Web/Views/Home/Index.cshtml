@@ -1,0 +1,265 @@
+﻿@{
+    ViewData["Title"] = "Trang chủ - WebMusic";
+    var stats = ViewBag.Stats as dynamic;
+    var recentSongs = ViewBag.RecentSongs as IEnumerable<WebMusic.Application.DTOs.SongDto>;
+    var popularSongs = ViewBag.PopularSongs as IEnumerable<WebMusic.Application.DTOs.SongDto>;
+}
+
+<!-- Welcome Section -->
+<div class="jumbotron bg-primary text-white rounded p-4 mb-4">
+    <div class="container-fluid">
+        <h1 class="display-4">
+            <i class="fas fa-music me-3"></i>Chào mừng đến với WebMusic!
+        </h1>
+        <p class="lead">Khám phá thế giới âm nhạc với hàng nghìn bài hát từ các nghệ sĩ yêu thích của bạn.</p>
+        <hr class="my-4">
+        <p>Tham gia cộng đồng âm nhạc lớn nhất và chia sẻ niềm đam mê âm nhạc của bạn.</p>
+        <a class="btn btn-light btn-lg" asp-controller="Songs" asp-action="Index" role="button">
+            <i class="fas fa-music me-2"></i>Khám phá ngay
+        </a>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">@(stats?.TotalSongs ?? 0)</h4>
+                        <p class="card-text">Bài hát</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-music fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">@(stats?.TotalUsers ?? 0)</h4>
+                        <p class="card-text">Người dùng</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-users fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">@(stats?.TotalAlbums ?? 0)</h4>
+                        <p class="card-text">Album</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-compact-disc fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">@(stats?.TotalPlaylists ?? 0)</h4>
+                        <p class="card-text">Playlist</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-list fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-bolt me-2"></i>Thao tác nhanh</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-2">
+                        <a asp-controller="Songs" asp-action="Create" class="btn btn-primary w-100">
+                            <i class="fas fa-plus me-2"></i>Thêm bài hát
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <a asp-controller="Songs" asp-action="Index" class="btn btn-success w-100">
+                            <i class="fas fa-music me-2"></i>Quản lý bài hát
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <a asp-controller="Albums" asp-action="Index" class="btn btn-warning w-100">
+                            <i class="fas fa-compact-disc me-2"></i>Quản lý Album
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <a asp-controller="Playlists" asp-action="Index" class="btn btn-info w-100">
+                            <i class="fas fa-list me-2"></i>Quản lý Playlist
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Songs -->
+@if (recentSongs != null && recentSongs.Any())
+{
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-clock me-2"></i>Bài hát mới nhất</h5>
+                    <a asp-controller="Songs" asp-action="Index" class="btn btn-sm btn-outline-primary">
+                        Xem tất cả
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        @foreach (var song in recentSongs)
+                        {
+                            <div class="col-md-4 col-lg-2 mb-3">
+                                <div class="card h-100">
+                                    @if (!string.IsNullOrEmpty(song.CoverImage))
+                                    {
+                                        <img src="@song.CoverImage" class="card-img-top" alt="@song.Title" style="height: 120px; object-fit: cover;">
+                                    }
+                                    else
+                                    {
+                                        <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 120px;">
+                                            <i class="fas fa-music fa-2x text-white"></i>
+                                        </div>
+                                    }
+                                    <div class="card-body p-2">
+                                        <h6 class="card-title text-truncate" title="@song.Title">@song.Title</h6>
+                                        <p class="card-text text-muted small text-truncate">
+                                            @(song.ArtistName ?? song.UserName ?? "Unknown")
+                                        </p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <small class="text-muted">
+                                                <i class="fas fa-eye me-1"></i>@song.ViewCount
+                                            </small>
+                                            <a asp-controller="Songs" asp-action="Details" asp-route-id="@song.SongId" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-play"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Popular Songs -->
+@if (popularSongs != null && popularSongs.Any())
+{
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-fire me-2"></i>Bài hát phổ biến</h5>
+                    <a asp-controller="Songs" asp-action="Index" class="btn btn-sm btn-outline-primary">
+                        Xem tất cả
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        @foreach (var song in popularSongs)
+                        {
+                            <div class="col-md-4 col-lg-2 mb-3">
+                                <div class="card h-100">
+                                    @if (!string.IsNullOrEmpty(song.CoverImage))
+                                    {
+                                        <img src="@song.CoverImage" class="card-img-top" alt="@song.Title" style="height: 120px; object-fit: cover;">
+                                    }
+                                    else
+                                    {
+                                        <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 120px;">
+                                            <i class="fas fa-music fa-2x text-white"></i>
+                                        </div>
+                                    }
+                                    <div class="card-body p-2">
+                                        <h6 class="card-title text-truncate" title="@song.Title">@song.Title</h6>
+                                        <p class="card-text text-muted small text-truncate">
+                                            @(song.ArtistName ?? song.UserName ?? "Unknown")
+                                        </p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <small class="text-muted">
+                                                <i class="fas fa-fire me-1"></i>@song.ViewCount
+                                            </small>
+                                            <a asp-controller="Songs" asp-action="Details" asp-route-id="@song.SongId" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-play"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Features Section -->
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-music fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Thư viện nhạc phong phú</h5>
+                <p class="card-text">Khám phá hàng nghìn bài hát từ các thể loại khác nhau và các nghệ sĩ nổi tiếng.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-users fa-3x text-success mb-3"></i>
+                <h5 class="card-title">Cộng đồng sôi động</h5>
+                <p class="card-text">Tham gia cộng đồng âm nhạc lớn nhất, chia sẻ và khám phá âm nhạc cùng nhau.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-mobile-alt fa-3x text-info mb-3"></i>
+                <h5 class="card-title">Nghe nhạc mọi lúc mọi nơi</h5>
+                <p class="card-text">Truy cập và nghe nhạc trên mọi thiết bị, mọi lúc mọi nơi bạn muốn.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Auto-refresh dashboard stats every 60 seconds
+        setInterval(function() {
+            // TODO: Implement AJAX call to refresh dashboard stats
+            console.log('Refreshing dashboard stats...');
+        }, 60000);
+    </script>
+}

@@ -1,0 +1,6 @@
+@WebMusic.API_HostAddress = http://localhost:5212
+
+GET {{WebMusic.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

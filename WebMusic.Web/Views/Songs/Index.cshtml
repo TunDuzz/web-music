@@ -1,0 +1,205 @@
+@model WebMusic.Web.ViewModels.Songs.SongListViewModel
+@{
+    ViewData["Title"] = "Danh sách bài hát";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-music me-2"></i>Danh sách bài hát</h2>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="fas fa-plus me-1"></i>Thêm bài hát mới
+    </a>
+</div>
+
+<!-- Search and Filter Form -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="fas fa-search me-2"></i>Tìm kiếm và lọc</h5>
+    </div>
+    <div class="card-body">
+        <form method="get" asp-action="Index">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label asp-for="SearchTerm" class="form-label">Từ khóa tìm kiếm</label>
+                    <input asp-for="SearchTerm" class="form-control" placeholder="Nhập tên bài hát, nghệ sĩ..." />
+                </div>
+                <div class="col-md-2">
+                    <label asp-for="GenreId" class="form-label">Thể loại</label>
+                    <select asp-for="GenreId" class="form-select">
+                        <option value="">Tất cả</option>
+                        <!-- TODO: Load genres from ViewBag -->
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label asp-for="AlbumId" class="form-label">Album</label>
+                    <select asp-for="AlbumId" class="form-select">
+                        <option value="">Tất cả</option>
+                        <!-- TODO: Load albums from ViewBag -->
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label asp-for="ArtistId" class="form-label">Nghệ sĩ</label>
+                    <select asp-for="ArtistId" class="form-select">
+                        <option value="">Tất cả</option>
+                        <!-- TODO: Load artists from ViewBag -->
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">&nbsp;</label>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-outline-primary">
+                            <i class="fas fa-search me-1"></i>Tìm kiếm
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" asp-for="Page" value="1" />
+            <input type="hidden" asp-for="PageSize" />
+            <input type="hidden" asp-for="SortBy" />
+            <input type="hidden" asp-for="SortDirection" />
+        </form>
+    </div>
+</div>
+
+<!-- Songs Grid -->
+@if (Model.Songs.Any())
+{
+    <div class="row">
+        @foreach (var song in Model.Songs)
+        {
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    @if (!string.IsNullOrEmpty(song.CoverImage))
+                    {
+                        <img src="@song.CoverImage" class="card-img-top" alt="@song.Title" style="height: 200px; object-fit: cover;">
+                    }
+                    else
+                    {
+                        <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <i class="fas fa-music fa-3x text-white"></i>
+                        </div>
+                    }
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">@song.Title</h5>
+                        <p class="card-text text-muted">
+                            <i class="fas fa-user me-1"></i>@(song.UserName ?? "Unknown")
+                            @if (!string.IsNullOrEmpty(song.ArtistName))
+                            {
+                                <br><i class="fas fa-microphone me-1"></i>@song.ArtistName
+                            }
+                            @if (!string.IsNullOrEmpty(song.GenreName))
+                            {
+                                <br><i class="fas fa-tag me-1"></i>@song.GenreName
+                            }
+                        </p>
+                        <div class="mt-auto">
+                            <div class="row text-center mb-3">
+                                <div class="col-4">
+                                    <small class="text-muted">Lượt xem</small>
+                                    <div class="fw-bold">@song.ViewCount</div>
+                                </div>
+                                <div class="col-4">
+                                    <small class="text-muted">Lượt thích</small>
+                                    <div class="fw-bold">@song.LikeCount</div>
+                                </div>
+                                <div class="col-4">
+                                    <small class="text-muted">Bình luận</small>
+                                    <div class="fw-bold">@song.CommentCount</div>
+                                </div>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <a asp-action="Details" asp-route-id="@song.SongId" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-eye me-1"></i>Xem chi tiết
+                                </a>
+                                <div class="btn-group" role="group">
+                                    <a asp-action="Edit" asp-route-id="@song.SongId" class="btn btn-outline-warning btn-sm">
+                                        <i class="fas fa-edit me-1"></i>Sửa
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@song.SongId" class="btn btn-outline-danger btn-sm">
+                                        <i class="fas fa-trash me-1"></i>Xóa
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-muted">
+                            <i class="fas fa-clock me-1"></i>@song.Duration.ToString(@"mm\:ss")
+                            <span class="float-end">
+                                <span class="badge bg-@(song.Status == "Approved" ? "success" : song.Status == "Pending" ? "warning" : "danger")">
+                                    @song.Status
+                                </span>
+                            </span>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Pagination -->
+    @if (Model.TotalPages > 1)
+    {
+        <nav aria-label="Songs pagination">
+            <ul class="pagination justify-content-center">
+                <li class="page-item @(Model.Page == 1 ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index" 
+                       asp-route-page="@(Model.Page - 1)"
+                       asp-route-searchTerm="@Model.SearchTerm"
+                       asp-route-genreId="@Model.GenreId"
+                       asp-route-albumId="@Model.AlbumId"
+                       asp-route-artistId="@Model.ArtistId"
+                       asp-route-sortBy="@Model.SortBy"
+                       asp-route-sortDirection="@Model.SortDirection">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                </li>
+                
+                @for (int i = Math.Max(1, Model.Page - 2); i <= Math.Min(Model.TotalPages, Model.Page + 2); i++)
+                {
+                    <li class="page-item @(i == Model.Page ? "active" : "")">
+                        <a class="page-link" asp-action="Index" 
+                           asp-route-page="@i"
+                           asp-route-searchTerm="@Model.SearchTerm"
+                           asp-route-genreId="@Model.GenreId"
+                           asp-route-albumId="@Model.AlbumId"
+                           asp-route-artistId="@Model.ArtistId"
+                           asp-route-sortBy="@Model.SortBy"
+                           asp-route-sortDirection="@Model.SortDirection">
+                            @i
+                        </a>
+                    </li>
+                }
+                
+                <li class="page-item @(Model.Page == Model.TotalPages ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index" 
+                       asp-route-page="@(Model.Page + 1)"
+                       asp-route-searchTerm="@Model.SearchTerm"
+                       asp-route-genreId="@Model.GenreId"
+                       asp-route-albumId="@Model.AlbumId"
+                       asp-route-artistId="@Model.ArtistId"
+                       asp-route-sortBy="@Model.SortBy"
+                       asp-route-sortDirection="@Model.SortDirection">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    }
+
+    <!-- Results Info -->
+    <div class="text-center text-muted">
+        Hiển thị @((Model.Page - 1) * Model.PageSize + 1) - @(Math.Min(Model.Page * Model.PageSize, Model.TotalCount)) 
+        trong tổng số @Model.TotalCount bài hát
+    </div>
+}
+else
+{
+    <div class="text-center py-5">
+        <i class="fas fa-music fa-5x text-muted mb-3"></i>
+        <h4 class="text-muted">Không tìm thấy bài hát nào</h4>
+        <p class="text-muted">Hãy thử thay đổi từ khóa tìm kiếm hoặc bộ lọc</p>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i>Thêm bài hát đầu tiên
+        </a>
+    </div>
+}

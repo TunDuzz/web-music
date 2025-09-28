@@ -1,0 +1,158 @@
+@model WebMusic.Application.DTOs.AlbumDto
+@{
+    ViewData["Title"] = "Chi tiết album";
+}
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        @if (!string.IsNullOrEmpty(Model.CoverImage))
+                        {
+                            <img src="@Model.CoverImage" class="img-fluid rounded" alt="@Model.AlbumName" />
+                        }
+                        else
+                        {
+                            <div class="bg-secondary rounded d-flex align-items-center justify-content-center" style="height: 300px;">
+                                <i class="fas fa-compact-disc fa-5x text-white"></i>
+                            </div>
+                        }
+                    </div>
+                    <div class="col-md-8">
+                        <h2 class="mb-3">@Model.AlbumName</h2>
+                        
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <strong><i class="fas fa-user me-2"></i>Người tạo:</strong>
+                                <span class="text-muted">@(Model.UserName ?? "Unknown")</span>
+                            </div>
+                            <div class="col-sm-6">
+                                <strong><i class="fas fa-microphone me-2"></i>Nghệ sĩ:</strong>
+                                <span class="text-muted">@(Model.ArtistName ?? "Chưa xác định")</span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <strong><i class="fas fa-music me-2"></i>Số bài hát:</strong>
+                                <span class="text-muted">@Model.SongCount</span>
+                            </div>
+                            <div class="col-sm-6">
+                                <strong><i class="fas fa-calendar me-2"></i>Ngày tạo:</strong>
+                                <span class="text-muted">@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</span>
+                            </div>
+                        </div>
+
+                        @if (Model.ReleaseDate.HasValue)
+                        {
+                            <div class="mb-3">
+                                <strong><i class="fas fa-calendar-alt me-2"></i>Ngày phát hành:</strong>
+                                <span class="text-muted">@Model.ReleaseDate.Value.ToString("dd/MM/yyyy")</span>
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Model.Description))
+                        {
+                            <div class="mb-3">
+                                <strong><i class="fas fa-align-left me-2"></i>Mô tả:</strong>
+                                <p class="text-muted">@Model.Description</p>
+                            </div>
+                        }
+
+                        <div class="d-flex gap-2">
+                            <a asp-action="Edit" asp-route-id="@Model.AlbumId" class="btn btn-warning">
+                                <i class="fas fa-edit me-1"></i>Chỉnh sửa
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@Model.AlbumId" class="btn btn-danger">
+                                <i class="fas fa-trash me-1"></i>Xóa
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Songs in Album -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-music me-2"></i>Bài hát trong album</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.SongCount > 0)
+                {
+                    <p class="text-muted">Album này có @Model.SongCount bài hát.</p>
+                    <a asp-controller="Songs" asp-action="Index" asp-route-albumId="@Model.AlbumId" class="btn btn-primary">
+                        <i class="fas fa-music me-1"></i>Xem tất cả bài hát
+                    </a>
+                }
+                else
+                {
+                    <div class="text-center py-3">
+                        <i class="fas fa-music fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">Album này chưa có bài hát nào</p>
+                        <a asp-controller="Songs" asp-action="Create" asp-route-albumId="@Model.AlbumId" class="btn btn-primary">
+                            <i class="fas fa-plus me-1"></i>Thêm bài hát đầu tiên
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <!-- Quick Actions -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="fas fa-bolt me-2"></i>Thao tác nhanh</h6>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a asp-action="Edit" asp-route-id="@Model.AlbumId" class="btn btn-warning">
+                        <i class="fas fa-edit me-1"></i>Chỉnh sửa
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@Model.AlbumId" class="btn btn-danger">
+                        <i class="fas fa-trash me-1"></i>Xóa album
+                    </a>
+                    <a asp-controller="Songs" asp-action="Create" asp-route-albumId="@Model.AlbumId" class="btn btn-success">
+                        <i class="fas fa-plus me-1"></i>Thêm bài hát
+                    </a>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-list me-1"></i>Danh sách album
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Album Information -->
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i>Thông tin chi tiết</h6>
+            </div>
+            <div class="card-body">
+                <table class="table table-sm">
+                    <tr>
+                        <td><strong>ID:</strong></td>
+                        <td>@Model.AlbumId</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ngày tạo:</strong></td>
+                        <td>@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                    </tr>
+                    @if (Model.UpdatedAt.HasValue)
+                    {
+                        <tr>
+                            <td><strong>Ngày cập nhật:</strong></td>
+                            <td>@Model.UpdatedAt.Value.ToString("dd/MM/yyyy HH:mm")</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td><strong>Số bài hát:</strong></td>
+                        <td>@Model.SongCount</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,104 @@
+@{
+    ViewData["Title"] = "Tạo dữ liệu mẫu";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="fas fa-database me-2"></i>Tạo dữ liệu mẫu
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info" role="alert">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Thông tin:</strong> Nhấn nút bên dưới để tạo dữ liệu mẫu đầy đủ cho testing tất cả chức năng.
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-2">
+                        <div class="card bg-primary text-white">
+                            <div class="card-body text-center">
+                                <i class="fas fa-user fa-2x mb-2"></i>
+                                <h6>User</h6>
+                                <small>admin@example.com</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="card bg-success text-white">
+                            <div class="card-body text-center">
+                                <i class="fas fa-tag fa-2x mb-2"></i>
+                                <h6>Genre</h6>
+                                <small>Pop</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="card bg-info text-white">
+                            <div class="card-body text-center">
+                                <i class="fas fa-microphone fa-2x mb-2"></i>
+                                <h6>Artist</h6>
+                                <small>Test Artist</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="card bg-warning text-white">
+                            <div class="card-body text-center">
+                                <i class="fas fa-compact-disc fa-2x mb-2"></i>
+                                <h6>Album</h6>
+                                <small>Demo Album</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="card bg-danger text-white">
+                            <div class="card-body text-center">
+                                <i class="fas fa-music fa-2x mb-2"></i>
+                                <h6>Song</h6>
+                                <small>Demo Song</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="card bg-secondary text-white">
+                            <div class="card-body text-center">
+                                <i class="fas fa-list fa-2x mb-2"></i>
+                                <h6>Playlist</h6>
+                                <small>Demo Playlist</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <form asp-action="CreateSampleData" method="post">
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-plus me-2"></i>Tạo dữ liệu mẫu
+                        </button>
+                    </div>
+                </form>
+
+                <div class="mt-4">
+                    <h5><i class="fas fa-list me-2"></i>Sau khi tạo dữ liệu, bạn có thể:</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <a asp-controller="Songs" asp-action="Index" class="text-decoration-none">Test chức năng Edit/Delete Songs</a>
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <a asp-controller="Albums" asp-action="Index" class="text-decoration-none">Test chức năng Edit/Delete Albums</a>
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <a asp-controller="Playlists" asp-action="Index" class="text-decoration-none">Test chức năng Edit/Delete Playlists</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

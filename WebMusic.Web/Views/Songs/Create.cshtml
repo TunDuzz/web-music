@@ -1,0 +1,162 @@
+@model WebMusic.Web.ViewModels.Songs.SongCreateViewModel
+@{
+    ViewData["Title"] = "Tạo bài hát mới";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="fas fa-plus-circle me-2"></i>Tạo bài hát mới
+                </h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                    
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <label asp-for="Title" class="form-label"></label>
+                                <input asp-for="Title" class="form-control" placeholder="Nhập tên bài hát..." />
+                                <span asp-validation-for="Title" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="AudioFile" class="form-label"></label>
+                                <input asp-for="AudioFile" type="file" class="form-control" accept=".mp3,.wav,.m4a,.aac,.ogg,.flac" />
+                                <span asp-validation-for="AudioFile" class="text-danger"></span>
+                                <div class="form-text">Chọn file nhạc (MP3, WAV, M4A, AAC, OGG, FLAC) - Tối đa 50MB</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="FileUrl" class="form-label"></label>
+                                <input asp-for="FileUrl" class="form-control" placeholder="https://example.com/song.mp3" />
+                                <span asp-validation-for="FileUrl" class="text-danger"></span>
+                                <div class="form-text">Hoặc nhập URL của file nhạc (tùy chọn)</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="CoverImageFile" class="form-label"></label>
+                                <input asp-for="CoverImageFile" type="file" class="form-control" accept=".jpg,.jpeg,.png,.gif,.bmp,.webp" />
+                                <span asp-validation-for="CoverImageFile" class="text-danger"></span>
+                                <div class="form-text">Chọn ảnh bìa (JPG, PNG, GIF, BMP, WEBP) - Tối đa 10MB</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="CoverImage" class="form-label"></label>
+                                <input asp-for="CoverImage" class="form-control" placeholder="https://example.com/cover.jpg" />
+                                <span asp-validation-for="CoverImage" class="text-danger"></span>
+                                <div class="form-text">Hoặc nhập URL của ảnh bìa (tùy chọn)</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Duration" class="form-label"></label>
+                                <input asp-for="Duration" class="form-control" type="number" min="1" max="3600" placeholder="180" />
+                                <span asp-validation-for="Duration" class="text-danger"></span>
+                                <div class="form-text">Thời lượng bài hát tính bằng giây (1-3600)</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label asp-for="GenreId" class="form-label"></label>
+                                <select asp-for="GenreId" class="form-select">
+                                    <option value="">-- Chọn thể loại --</option>
+                                    @if (Model.Genres != null)
+                                    {
+                                        @foreach (var genre in Model.Genres)
+                                        {
+                                            <option value="@genre.GenreId">@genre.GenreName</option>
+                                        }
+                                    }
+                                </select>
+                                <span asp-validation-for="GenreId" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="AlbumId" class="form-label"></label>
+                                <select asp-for="AlbumId" class="form-select">
+                                    <option value="">-- Chọn album --</option>
+                                    @if (Model.Albums != null)
+                                    {
+                                        @foreach (var album in Model.Albums)
+                                        {
+                                            <option value="@album.AlbumId">@album.AlbumName</option>
+                                        }
+                                    }
+                                </select>
+                                <span asp-validation-for="AlbumId" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="ArtistId" class="form-label"></label>
+                                <select asp-for="ArtistId" class="form-select">
+                                    <option value="">-- Chọn nghệ sĩ --</option>
+                                    @if (Model.Artists != null)
+                                    {
+                                        @foreach (var artist in Model.Artists)
+                                        {
+                                            <option value="@artist.ArtistId">@artist.ArtistName</option>
+                                        }
+                                    }
+                                </select>
+                                <span asp-validation-for="ArtistId" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Quay lại
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i>Tạo bài hát
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        // Preview cover image
+        document.getElementById('CoverImage').addEventListener('input', function() {
+            const url = this.value;
+            if (url) {
+                const preview = document.getElementById('coverPreview');
+                if (!preview) {
+                    const previewDiv = document.createElement('div');
+                    previewDiv.id = 'coverPreview';
+                    previewDiv.className = 'mt-2';
+                    previewDiv.innerHTML = '<img src="' + url + '" class="img-thumbnail" style="max-width: 200px; max-height: 200px;" onerror="this.style.display=\'none\'">';
+                    this.parentNode.appendChild(previewDiv);
+                } else {
+                    preview.innerHTML = '<img src="' + url + '" class="img-thumbnail" style="max-width: 200px; max-height: 200px;" onerror="this.style.display=\'none\'">';
+                }
+            }
+        });
+
+        // Duration converter
+        document.getElementById('Duration').addEventListener('input', function() {
+            const seconds = parseInt(this.value);
+            if (seconds > 0) {
+                const minutes = Math.floor(seconds / 60);
+                const remainingSeconds = seconds % 60;
+                const durationText = document.getElementById('durationText');
+                if (!durationText) {
+                    const durationDiv = document.createElement('div');
+                    durationDiv.id = 'durationText';
+                    durationDiv.className = 'form-text text-info';
+                    this.parentNode.appendChild(durationDiv);
+                }
+                document.getElementById('durationText').textContent = `Thời lượng: ${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+            }
+        });
+    </script>
+}

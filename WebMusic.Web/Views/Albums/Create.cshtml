@@ -1,0 +1,100 @@
+@model WebMusic.Web.ViewModels.Albums.AlbumCreateViewModel
+@{
+    ViewData["Title"] = "Tạo album mới";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="fas fa-plus-circle me-2"></i>Tạo album mới
+                </h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                    
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <label asp-for="AlbumName" class="form-label"></label>
+                                <input asp-for="AlbumName" class="form-control" placeholder="Nhập tên album..." />
+                                <span asp-validation-for="AlbumName" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Description" class="form-label"></label>
+                                <textarea asp-for="Description" class="form-control" rows="4" placeholder="Nhập mô tả album..."></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="CoverImage" class="form-label"></label>
+                                <input asp-for="CoverImage" class="form-control" placeholder="https://example.com/cover.jpg" />
+                                <span asp-validation-for="CoverImage" class="text-danger"></span>
+                                <div class="form-text">Nhập URL của ảnh bìa (tùy chọn)</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label asp-for="ReleaseDate" class="form-label"></label>
+                                <input asp-for="ReleaseDate" class="form-control" type="date" />
+                                <span asp-validation-for="ReleaseDate" class="text-danger"></span>
+                                <div class="form-text">Ngày phát hành album</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="ArtistId" class="form-label"></label>
+                                <select asp-for="ArtistId" class="form-select">
+                                    <option value="">-- Chọn nghệ sĩ --</option>
+                                    @if (Model.Artists != null)
+                                    {
+                                        @foreach (var artist in Model.Artists)
+                                        {
+                                            <option value="@artist.ArtistId">@artist.ArtistName</option>
+                                        }
+                                    }
+                                </select>
+                                <span asp-validation-for="ArtistId" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Quay lại
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i>Tạo album
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        // Preview cover image
+        document.getElementById('CoverImage').addEventListener('input', function() {
+            const url = this.value;
+            if (url) {
+                const preview = document.getElementById('coverPreview');
+                if (!preview) {
+                    const previewDiv = document.createElement('div');
+                    previewDiv.id = 'coverPreview';
+                    previewDiv.className = 'mt-2';
+                    previewDiv.innerHTML = '<img src="' + url + '" class="img-thumbnail" style="max-width: 200px; max-height: 200px;" onerror="this.style.display=\'none\'">';
+                    this.parentNode.appendChild(previewDiv);
+                } else {
+                    preview.innerHTML = '<img src="' + url + '" class="img-thumbnail" style="max-width: 200px; max-height: 200px;" onerror="this.style.display=\'none\'">';
+                }
+            }
+        });
+    </script>
+}

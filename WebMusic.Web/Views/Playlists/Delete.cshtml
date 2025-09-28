@@ -1,0 +1,132 @@
+@model WebMusic.Application.DTOs.PlaylistDto
+@{
+    ViewData["Title"] = "Xóa playlist";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Xác nhận xóa playlist
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning" role="alert">
+                    <i class="fas fa-warning me-2"></i>
+                    <strong>Cảnh báo!</strong> Bạn có chắc chắn muốn xóa playlist này không? 
+                    Hành động này không thể hoàn tác và sẽ xóa vĩnh viễn tất cả dữ liệu liên quan.
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="bg-gradient rounded d-flex align-items-center justify-content-center" style="height: 200px; background: linear-gradient(45deg, #007bff, #6f42c1);">
+                            <i class="fas fa-list fa-4x text-white"></i>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <h5 class="text-danger">@Model.PlaylistName</h5>
+                        
+                        <div class="mb-3">
+                            <strong><i class="fas fa-user me-2"></i>Người tạo:</strong>
+                            <span class="text-muted">@(Model.UserName ?? "Unknown")</span>
+                        </div>
+
+                        <div class="mb-3">
+                            <strong><i class="fas fa-music me-2"></i>Số bài hát:</strong>
+                            <span class="text-muted">@Model.SongCount</span>
+                        </div>
+
+                        <div class="mb-3">
+                            <strong><i class="fas fa-calendar me-2"></i>Ngày tạo:</strong>
+                            <span class="text-muted">@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</span>
+                        </div>
+
+                        <div class="mb-3">
+                            <strong><i class="fas fa-eye me-2"></i>Trạng thái:</strong>
+                            <span class="badge bg-@(Model.IsPublic ? "success" : "secondary")">
+                                @(Model.IsPublic ? "Công khai" : "Riêng tư")
+                            </span>
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(Model.Description))
+                        {
+                            <div class="mb-3">
+                                <strong><i class="fas fa-align-left me-2"></i>Mô tả:</strong>
+                                <p class="text-muted">@Model.Description</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Impact Warning -->
+                <div class="card mt-4 border-warning">
+                    <div class="card-header bg-warning">
+                        <h6 class="mb-0 text-dark">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Tác động khi xóa
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2">
+                                <i class="fas fa-times-circle text-danger me-2"></i>
+                                <strong>@Model.SongCount bài hát</strong> sẽ bị xóa khỏi playlist
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-times-circle text-danger me-2"></i>
+                                Tất cả thứ tự bài hát sẽ bị mất
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-times-circle text-danger me-2"></i>
+                                Lịch sử nghe nhạc liên quan sẽ bị mất
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-times-circle text-danger me-2"></i>
+                                Playlist sẽ không còn tồn tại
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <form asp-action="Delete" method="post" class="mt-4">
+                    <input asp-for="PlaylistId" type="hidden" />
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Hủy bỏ
+                        </a>
+                        <div>
+                            <a asp-action="Details" asp-route-id="@Model.PlaylistId" class="btn btn-info me-2">
+                                <i class="fas fa-eye me-1"></i>Xem chi tiết
+                            </a>
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa playlist này không?')">
+                                <i class="fas fa-trash me-1"></i>Xác nhận xóa
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Double confirmation for delete
+        document.querySelector('form').addEventListener('submit', function(e) {
+            if (!confirm('Bạn có chắc chắn muốn xóa playlist này không? Hành động này không thể hoàn tác!')) {
+                e.preventDefault();
+            }
+        });
+
+        // Highlight delete button on hover
+        document.querySelector('.btn-danger').addEventListener('mouseenter', function() {
+            this.classList.add('btn-outline-danger');
+            this.classList.remove('btn-danger');
+        });
+
+        document.querySelector('.btn-danger').addEventListener('mouseleave', function() {
+            this.classList.remove('btn-outline-danger');
+            this.classList.add('btn-danger');
+        });
+    </script>
+}

@@ -1,0 +1,144 @@
+@model WebMusic.Web.ViewModels.Albums.AlbumEditViewModel
+@{
+    ViewData["Title"] = "Chỉnh sửa album";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="fas fa-edit me-2"></i>Chỉnh sửa album: @Model.AlbumName
+                </h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="Edit" method="post">
+                    <input asp-for="AlbumId" type="hidden" />
+                    <input asp-for="CreatedAt" type="hidden" />
+                    <input asp-for="SongCount" type="hidden" />
+                    <input asp-for="UserName" type="hidden" />
+                    
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                    
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <label asp-for="AlbumName" class="form-label"></label>
+                                <input asp-for="AlbumName" class="form-control" placeholder="Nhập tên album..." />
+                                <span asp-validation-for="AlbumName" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Description" class="form-label"></label>
+                                <textarea asp-for="Description" class="form-control" rows="4" placeholder="Nhập mô tả album..."></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="CoverImage" class="form-label"></label>
+                                <input asp-for="CoverImage" class="form-control" placeholder="https://example.com/cover.jpg" />
+                                <span asp-validation-for="CoverImage" class="text-danger"></span>
+                                <div class="form-text">Nhập URL của ảnh bìa (tùy chọn)</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label asp-for="ReleaseDate" class="form-label"></label>
+                                <input asp-for="ReleaseDate" class="form-control" type="date" />
+                                <span asp-validation-for="ReleaseDate" class="text-danger"></span>
+                                <div class="form-text">Ngày phát hành album</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="ArtistId" class="form-label"></label>
+                                <select asp-for="ArtistId" class="form-select">
+                                    <option value="">-- Chọn nghệ sĩ --</option>
+                                    @if (Model.Artists != null)
+                                    {
+                                        @foreach (var artist in Model.Artists)
+                                        {
+                                            <option value="@artist.ArtistId" selected="@(artist.ArtistId == Model.ArtistId)">
+                                                @artist.ArtistName
+                                            </option>
+                                        }
+                                    }
+                                </select>
+                                <span asp-validation-for="ArtistId" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Statistics -->
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h6 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Thống kê</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row text-center">
+                                <div class="col-4">
+                                    <div class="text-primary">
+                                        <i class="fas fa-music fa-2x mb-2"></i>
+                                        <div class="fw-bold fs-4">@Model.SongCount</div>
+                                        <small class="text-muted">Số bài hát</small>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="text-success">
+                                        <i class="fas fa-user fa-2x mb-2"></i>
+                                        <div class="fw-bold fs-6">@Model.UserName</div>
+                                        <small class="text-muted">Người tạo</small>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="text-warning">
+                                        <i class="fas fa-calendar fa-2x mb-2"></i>
+                                        <div class="fw-bold fs-6">@Model.CreatedAt.ToString("dd/MM/yyyy")</div>
+                                        <small class="text-muted">Ngày tạo</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Quay lại
+                        </a>
+                        <div>
+                            <a asp-action="Details" asp-route-id="@Model.AlbumId" class="btn btn-info me-2">
+                                <i class="fas fa-eye me-1"></i>Xem chi tiết
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i>Cập nhật
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        // Preview cover image
+        document.getElementById('CoverImage').addEventListener('input', function() {
+            const url = this.value;
+            if (url) {
+                const preview = document.getElementById('coverPreview');
+                if (!preview) {
+                    const previewDiv = document.createElement('div');
+                    previewDiv.id = 'coverPreview';
+                    previewDiv.className = 'mt-2';
+                    previewDiv.innerHTML = '<img src="' + url + '" class="img-thumbnail" style="max-width: 200px; max-height: 200px;" onerror="this.style.display=\'none\'">';
+                    this.parentNode.appendChild(previewDiv);
+                } else {
+                    preview.innerHTML = '<img src="' + url + '" class="img-thumbnail" style="max-width: 200px; max-height: 200px;" onerror="this.style.display=\'none\'">';
+                }
+            }
+        });
+    </script>
+}

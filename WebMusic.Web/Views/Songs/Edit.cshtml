@@ -1,0 +1,194 @@
+@model WebMusic.Web.ViewModels.Songs.SongEditViewModel
+@{
+    ViewData["Title"] = "Chỉnh sửa bài hát";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="fas fa-edit me-2"></i>Chỉnh sửa bài hát: @Model.Title
+                </h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="Edit" method="post">
+                    <input asp-for="SongId" type="hidden" />
+                    <input asp-for="FileUrl" type="hidden" />
+                    <input asp-for="Duration" type="hidden" />
+                    <input asp-for="Status" type="hidden" />
+                    <input asp-for="UploadedAt" type="hidden" />
+                    <input asp-for="ViewCount" type="hidden" />
+                    <input asp-for="LikeCount" type="hidden" />
+                    <input asp-for="CommentCount" type="hidden" />
+                    
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                    
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <label asp-for="Title" class="form-label"></label>
+                                <input asp-for="Title" class="form-control" placeholder="Nhập tên bài hát..." />
+                                <span asp-validation-for="Title" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="CoverImage" class="form-label"></label>
+                                <input asp-for="CoverImage" class="form-control" placeholder="https://example.com/cover.jpg" />
+                                <span asp-validation-for="CoverImage" class="text-danger"></span>
+                                <div class="form-text">Nhập URL của ảnh bìa (tùy chọn)</div>
+                            </div>
+
+                            <!-- Read-only information -->
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">File nhạc</label>
+                                    <div class="form-control-plaintext">
+                                        <a href="@Model.FileUrl" target="_blank" class="text-decoration-none">
+                                            <i class="fas fa-music me-1"></i>Nghe thử
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Thời lượng</label>
+                                    <div class="form-control-plaintext">
+                                        <i class="fas fa-clock me-1"></i>@TimeSpan.FromSeconds(Model.Duration).ToString(@"mm\:ss")
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label asp-for="GenreId" class="form-label"></label>
+                                <select asp-for="GenreId" class="form-select">
+                                    <option value="">-- Chọn thể loại --</option>
+                                    @if (Model.Genres != null)
+                                    {
+                                        @foreach (var genre in Model.Genres)
+                                        {
+                                            <option value="@genre.GenreId" selected="@(genre.GenreId == Model.GenreId)">
+                                                @genre.GenreName
+                                            </option>
+                                        }
+                                    }
+                                </select>
+                                <span asp-validation-for="GenreId" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="AlbumId" class="form-label"></label>
+                                <select asp-for="AlbumId" class="form-select">
+                                    <option value="">-- Chọn album --</option>
+                                    @if (Model.Albums != null)
+                                    {
+                                        @foreach (var album in Model.Albums)
+                                        {
+                                            <option value="@album.AlbumId" selected="@(album.AlbumId == Model.AlbumId)">
+                                                @album.AlbumName
+                                            </option>
+                                        }
+                                    }
+                                </select>
+                                <span asp-validation-for="AlbumId" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="ArtistId" class="form-label"></label>
+                                <select asp-for="ArtistId" class="form-select">
+                                    <option value="">-- Chọn nghệ sĩ --</option>
+                                    @if (Model.Artists != null)
+                                    {
+                                        @foreach (var artist in Model.Artists)
+                                        {
+                                            <option value="@artist.ArtistId" selected="@(artist.ArtistId == Model.ArtistId)">
+                                                @artist.ArtistName
+                                            </option>
+                                        }
+                                    }
+                                </select>
+                                <span asp-validation-for="ArtistId" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Statistics -->
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h6 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Thống kê</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row text-center">
+                                <div class="col-3">
+                                    <div class="text-primary">
+                                        <i class="fas fa-eye fa-2x mb-2"></i>
+                                        <div class="fw-bold fs-4">@Model.ViewCount</div>
+                                        <small class="text-muted">Lượt xem</small>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="text-danger">
+                                        <i class="fas fa-heart fa-2x mb-2"></i>
+                                        <div class="fw-bold fs-4">@Model.LikeCount</div>
+                                        <small class="text-muted">Lượt thích</small>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="text-success">
+                                        <i class="fas fa-comment fa-2x mb-2"></i>
+                                        <div class="fw-bold fs-4">@Model.CommentCount</div>
+                                        <small class="text-muted">Bình luận</small>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="text-warning">
+                                        <i class="fas fa-calendar fa-2x mb-2"></i>
+                                        <div class="fw-bold fs-6">@Model.UploadedAt.ToString("dd/MM/yyyy")</div>
+                                        <small class="text-muted">Ngày tạo</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Quay lại
+                        </a>
+                        <div>
+                            <a asp-action="Details" asp-route-id="@Model.SongId" class="btn btn-info me-2">
+                                <i class="fas fa-eye me-1"></i>Xem chi tiết
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i>Cập nhật
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        // Preview cover image
+        document.getElementById('CoverImage').addEventListener('input', function() {
+            const url = this.value;
+            if (url) {
+                const preview = document.getElementById('coverPreview');
+                if (!preview) {
+                    const previewDiv = document.createElement('div');
+                    previewDiv.id = 'coverPreview';
+                    previewDiv.className = 'mt-2';
+                    previewDiv.innerHTML = '<img src="' + url + '" class="img-thumbnail" style="max-width: 200px; max-height: 200px;" onerror="this.style.display=\'none\'">';
+                    this.parentNode.appendChild(previewDiv);
+                } else {
+                    preview.innerHTML = '<img src="' + url + '" class="img-thumbnail" style="max-width: 200px; max-height: 200px;" onerror="this.style.display=\'none\'">';
+                }
+            }
+        });
+    </script>
+}
