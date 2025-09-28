@@ -30,18 +30,31 @@ Dự án được tổ chức theo Clean Architecture với các layer sau:
 - **Middleware**: Custom middleware cho validation và exception handling
 - **Configuration**: Cấu hình ứng dụng
 
+### 5. Web Layer (WebMusic.Web)
+- **Controllers**: MVC controllers
+- **Views**: Razor views với Bootstrap 5
+- **ViewModels**: Models cho views
+- **Services**: Web-specific services
+
 ## Tính năng chính
 
+### Authentication & Authorization
+- Đăng ký/Đăng nhập với ASP.NET Core Identity
+- Role-based authorization (Admin, Moderator, User)
+- Profile management
+- Password change
+
 ### Quản lý Người dùng
-- Đăng ký/Đăng nhập
-- Quản lý profile
-- Theo dõi người dùng khác
+- CRUD operations cho users
+- User profile management
+- Follow/Unfollow users
 
 ### Quản lý Nhạc
 - Upload và quản lý bài hát
 - Phân loại theo thể loại
 - Quản lý album
 - Tìm kiếm và lọc
+- File upload cho audio và images
 
 ### Quản lý Playlist
 - Tạo và quản lý playlist
@@ -64,8 +77,8 @@ Dự án được tổ chức theo Clean Architecture với các layer sau:
 
 1. **Clone repository**
 ```bash
-git clone <repository-url>
-cd WebMusic
+git clone https://github.com/TunDuzz/web-music.git
+cd web-music
 ```
 
 2. **Restore packages**
@@ -77,17 +90,23 @@ dotnet restore
 - Cập nhật connection string trong `appsettings.json`
 - Chạy migrations:
 ```bash
-dotnet ef database update --project WebMusic.Infrastructure --startup-project WebMusic.API
+dotnet ef database update --project WebMusic.Infrastructure --startup-project WebMusic.Web
 ```
 
 4. **Chạy ứng dụng**
 ```bash
+# Web Application
+dotnet run --project WebMusic.Web
+
+# API
 dotnet run --project WebMusic.API
 ```
 
-5. **Truy cập API**
-- Swagger UI: `https://localhost:7000/swagger`
-- API Base URL: `https://localhost:7000/api`
+5. **Truy cập ứng dụng**
+- Web App: `http://localhost:5000`
+- API: `http://localhost:5001`
+- Swagger UI: `http://localhost:5001/swagger`
+- Seed Data: `http://localhost:5000/SeedData`
 
 ## API Endpoints
 
@@ -115,7 +134,8 @@ dotnet run --project WebMusic.API
 ## Cấu trúc Database
 
 ### Bảng chính
-- **Users**: Thông tin người dùng
+- **AspNetUsers**: Thông tin người dùng (Identity)
+- **AspNetRoles**: Roles (Identity)
 - **Songs**: Thông tin bài hát
 - **Albums**: Thông tin album
 - **Playlists**: Thông tin playlist
@@ -125,7 +145,6 @@ dotnet run --project WebMusic.API
 - **Likes**: Lượt thích
 - **PlayHistories**: Lịch sử nghe nhạc
 - **Follows**: Theo dõi người dùng
-- **PlaylistSongs**: Quan hệ nhiều-nhiều giữa playlist và song
 
 ## Validation
 
